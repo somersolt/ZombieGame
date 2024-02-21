@@ -66,13 +66,26 @@ void SceneGame::Update(float dt)
 		Zombie* zombie = Zombie::Create(zombieType);
 		zombie->Init();
 		zombie->Reset();
-		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f 
-		+ ((sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f)
+		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f
+			+ ((sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f)
 		);
 
 		AddGo(zombie);
 	}
+
+
+	for (auto obj : gameObjects) {
+		Zombie* zombie = dynamic_cast<Zombie*>(obj);
+		if (obj->GetActive()) {
+			float distance = Utils::Magnitude(zombie->GetLook());
+			if (distance < 10.f) {
+				RemoveGo(obj);
+				delete obj;
+			}
+		}
+	}
 }
+
 
 void SceneGame::Draw(sf::RenderWindow& window)
 {

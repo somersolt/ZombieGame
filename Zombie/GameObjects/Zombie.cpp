@@ -59,11 +59,11 @@ void Zombie::Update(float dt)
 
 	Translate(look * speed * dt);
 
-
-	if (Utils::Magnitude(look) < Utils::Magnitude({ 10.f, 10.f }))
-	{
-		Release();
-	}
+	//float distance = Utils::Magnitude(look);
+	//if (distance < 10.f)
+	//{
+	//	delete this;
+	//}
 }
 
 void Zombie::Draw(sf::RenderWindow& window)
