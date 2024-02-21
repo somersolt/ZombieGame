@@ -2,6 +2,7 @@
 #include "SceneGame.h"
 #include "Player.h"
 #include "TileMap.h"
+#include "Zombie.h"
 
 SceneGame::SceneGame(SceneIds id) : Scene(id)
 {
@@ -26,8 +27,16 @@ void SceneGame::Enter()
 {
 	Scene::Enter();
 
+
+
+
+	sf::Vector2f windowSize = (sf::Vector2f)FRAMEWORK.GetWindowSize();
 	sf::Vector2f centerPos = (sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f;
 
+	worldView.setSize(windowSize);
+	worldView.setCenter({ 0.f ,0.f });
+	uiView.setSize((windowSize));
+	uiView.setSize((centerPos));
 
 	TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
 
@@ -36,6 +45,7 @@ void SceneGame::Enter()
 	tileMap->SetRotation(45);
 
 	player->SetPosition(centerPos);
+	
 	//player->SetPosition( { 500, 500 } );
 }
 
@@ -47,6 +57,21 @@ void SceneGame::Exit()
 void SceneGame::Update(float dt)
 {
 	Scene::Update(dt);
+
+	worldView.setCenter(player->GetPosition());
+
+	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
+	{
+		Zombie::Types zombieType = (Zombie::Types)Utils::RandomRange(0, Zombie::TOtalTypes);
+		Zombie* zombie = Zombie::Create(zombieType);
+		zombie->Init();
+		zombie->Reset();
+		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f 
+		+ ((sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f)
+		);
+
+		AddGo(zombie);
+	}
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)

@@ -2,11 +2,25 @@
 
 class GameObject;
 
+
+
 class Scene
 {
+public:
+	enum Layers
+	{
+		None = 0,
+		World =1,
+		Ui = 2,
+		EveryThing = 0xfffffff,
+	};
 protected:
 	SceneIds id;
 	std::list<GameObject*> gameObjects;
+	std::list<GameObject*> uiGameObjects;
+
+	sf::View worldView;
+	sf::View uiView;
 
 	ResourceMgr<sf::Texture>& texResMgr;
 	ResourceMgr<sf::Font>& fontResMgr;
@@ -15,6 +29,14 @@ public:
 	Scene(SceneIds id);
 
 	virtual ~Scene() = default;
+
+
+	sf::Vector2f ScreenToWorld(sf::Vector2i screenPos);
+	sf::Vector2i WorldToScreen(sf::Vector2f worldPos);
+
+	sf::Vector2f ScreenToUi(sf::Vector2i screenPos);
+	sf::Vector2i WorldToUi(sf::Vector2f worldPos);
+
 
 	virtual void Init();
 	virtual void Release();
@@ -25,10 +47,10 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw(sf::RenderWindow& window);
 
-	virtual GameObject* FindGo(const std::string& name);
-	virtual int FindGoAll(const std::string& name, std::list<GameObject*>& list);
+	virtual GameObject* FindGo(const std::string& name, Layers layer = Layers::EveryThing);
+	virtual int FindGoAll(const std::string& name, std::list<GameObject*>& list, Layers layer = Layers::EveryThing);
 
-	virtual GameObject* AddGo(GameObject* obj);
+	virtual GameObject* AddGo(GameObject* obj, Layers layer = Layers::World);
 	virtual void RemoveGo(GameObject* obj);
 
 	Scene(const Scene&) = delete;
