@@ -33,8 +33,7 @@ void Player::Update(float dt)
 	look = mouseWorldPos - position;
 	Utils::Normalize(look);
 
-	float angle = Utils::Angle(look);
-	sprite.setRotation(angle);
+	SetRotation(Utils::Angle(look));
 
 	direction.x = InputMgr::GetAxis(Axis::Horizontal);
 	direction.y = InputMgr::GetAxis(Axis::Vertical);
@@ -44,7 +43,7 @@ void Player::Update(float dt)
 		Utils::Normalize(direction);
 	}
 
-	SetPosition(position + direction * speed * dt);
+	Translate(direction * speed * dt);
 
 }
 

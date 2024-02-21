@@ -20,6 +20,18 @@ void SpriteGo::SetPosition(const sf::Vector2f& pos)
 	sprite.setPosition(pos);
 }
 
+void SpriteGo::Translate(const sf::Vector2f& delta)
+{
+	position += delta;
+	sprite.setPosition(position);
+}
+
+void SpriteGo::SetRotation(float r)
+{
+	rotation = r;
+	sprite.setRotation(rotation);
+}
+
 void SpriteGo::SetOrigin(Origins preset)
 {
 	if (preset == Origins::Custom)
