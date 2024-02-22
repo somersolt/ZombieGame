@@ -10,7 +10,7 @@ public:
 	enum Layers
 	{
 		None = 0,
-		World =1,
+		World = 1,
 		Ui = 2,
 		EveryThing = 0xfffffff,
 	};
@@ -18,6 +18,9 @@ protected:
 	SceneIds id;
 	std::list<GameObject*> gameObjects;
 	std::list<GameObject*> uiGameObjects;
+
+	std::list<GameObject*> resortingGameObjects;
+	std::list<GameObject*> removeGameObjects;
 
 	sf::View worldView;
 	sf::View uiView;
@@ -51,6 +54,7 @@ public:
 	virtual int FindGoAll(const std::string& name, std::list<GameObject*>& list, Layers layer = Layers::EveryThing);
 
 	virtual GameObject* AddGo(GameObject* obj, Layers layer = Layers::World);
+	virtual void ResortGo(GameObject* obj);
 	virtual void RemoveGo(GameObject* obj);
 
 	Scene(const Scene&) = delete;

@@ -7,7 +7,7 @@ Zombie::Zombie(const std::string& name) : SpriteGo(name)
 
 Zombie* Zombie::Create(Types zombieType)
 {
-	Zombie* zombie = new Zombie();
+	Zombie* zombie = new Zombie("zombie");
 	zombie->type = zombieType;
 	switch (zombieType)
 	{
@@ -51,22 +51,39 @@ void Zombie::Reset()
 
 void Zombie::Update(float dt)
 {
-	SpriteGo::Update(dt);
+	if(!isDead)
+	{
+		SpriteGo::Update(dt);
 
-	look = player->GetPosition() - position;
-	Utils::Normalize(look);
-	SetRotation(Utils::Angle(look));
+		look = player->GetPosition() - position;
+		Utils::Normalize(look);
+		SetRotation(Utils::Angle(look));
 
-	Translate(look * speed * dt);
+		Translate(look * speed * dt);
 
-	//float distance = Utils::Magnitude(look);
-	//if (distance < 10.f)
-	//{
-	//	delete this;
-	//}
+		//if (Utils::Distance(position, player->GetPosition()) < 50.f)
+		//{
+		//	SCENE_MGR.GetCurrentScene()->RemoveGo(this);
+		//} // 삭제하는 테스트 코드
+
+	}
+
+	if (isDead)
+	{
+		this->SetTexture("graphics/blood.png");
+	}
+	
+
+
+
 }
 
 void Zombie::Draw(sf::RenderWindow& window)
 {
 	SpriteGo::Draw(window);
+}
+
+void Zombie::SetZombieIsDead()
+{
+	isDead = true;
 }

@@ -11,6 +11,7 @@ public:
 	Player(const std::string& name = "");
 	~Player() override = default;
 
+
 	void Init();
 	void Release();
 
@@ -18,6 +19,9 @@ public:
 
 	void Update(float dt);
 	void Draw(sf::RenderWindow& window);
+
+	const sf::Vector2f GetLook() const { return look; }
+	const sf::FloatRect GetPlayerBound() const { return sprite.getGlobalBounds(); }
 
 };
 

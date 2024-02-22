@@ -1,6 +1,7 @@
 #pragma once
 #include "SpriteGo.h"
 #include "Player.h"
+#include "Bullet.h"
 class Zombie : public SpriteGo
 {
 
@@ -22,7 +23,10 @@ protected:
 	int hp;
 	sf::Vector2f look = { 1.0f, 0.f };
 	Player* player;
+	Bullet* bullet;
 	Zombie(const std::string& name = "");
+
+	bool isDead = false;
 
 public:
 	~Zombie() override = default;
@@ -32,7 +36,11 @@ public:
 	void Reset() override;
 	void Update(float dt) override;
 	void Draw(sf::RenderWindow& window) override;
-	const sf::Vector2f GetLook() const { return look; }
+
+
+	void SetZombieIsDead();
+	const bool GetZombieIsDead() const { return isDead; }
+	const sf::FloatRect GetZombieBound() const { return sprite.getGlobalBounds(); }
 
 };
 

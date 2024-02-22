@@ -70,6 +70,8 @@ void TileMap::Set(const sf::Vector2i& count, const sf::Vector2f& size)
 		}
 	}
 
+	mapBounds = { size.x , size.y, (count.x - 1) * size.x , (count.y -1) * size.y };
+
 }
 
 void TileMap::SetOrigin(Origins preset)
@@ -134,7 +136,7 @@ void TileMap::Init()
 {
 	GameObject::Init();
 	SetSpriteSheetId("graphics/background_sheet.png");
-	Set({ 10, 10 }, { 50, 50 });
+	Set({ 20, 10 }, { 50, 50 });
 }
 
 void TileMap::Release()

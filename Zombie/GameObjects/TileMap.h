@@ -10,6 +10,8 @@ protected:
 	sf::Vector2i cellCount;
 	sf::Vector2f cellSize;
 
+	sf::FloatRect mapBounds;
+
 	sf::Transform transform;
 
 public:
@@ -26,9 +28,9 @@ public:
 	void SetPosition(const sf::Vector2f& pos) override;
 	void Translate(const sf::Vector2f& delta) override;
 	void SetRotation(float r) override;
-
-
 	void SetScale(const sf::Vector2f& scale) override;
+
+	sf::FloatRect GetMapBounds() const { return mapBounds; }
 
 	void SetFlipX(bool flip) override;
 	void SetFlipY(bool flip) override;

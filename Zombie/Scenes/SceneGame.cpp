@@ -3,6 +3,10 @@
 #include "Player.h"
 #include "TileMap.h"
 #include "Zombie.h"
+#include "ZombieSpawner.h"
+#include "Bullet.h"
+#include "CrossHair.h"
+#include "HpBar.h"
 
 SceneGame::SceneGame(SceneIds id) : Scene(id)
 {
@@ -10,10 +14,30 @@ SceneGame::SceneGame(SceneIds id) : Scene(id)
 
 void SceneGame::Init()
 {
-	AddGo(new TileMap("Background"));
-	
+	tileMap = new TileMap("Background");
+	tileMap->sortLayer = -1;
+	AddGo(tileMap);
+
 	player = new Player("Player");
 	AddGo(player);
+
+	spawners = new ZombieSpawner();
+	AddGo(spawners);
+
+	sf::Vector2f hpSize(600.f, 50.f);
+	hpBar = new HpBar("hpBar");
+	hpBar->SetSize(hpSize);
+	hpBar->SetSpeed(10);
+	hpBar->Reset();
+	hpBar->SetOrigin(Origins::ML);
+	HpBarPos.x *= 0.5f;
+	HpBarPos.y -= 200.f;
+	hpBar->SetPosition(mapCenterPos);
+	hpBar->SetColor(sf::Color::Red);
+	AddGo(hpBar);
+
+	CrossHair* crosshair = new CrossHair("crosshair");
+	AddGo(crosshair);
 
 	Scene::Init();
 }
@@ -27,7 +51,7 @@ void SceneGame::Enter()
 {
 	Scene::Enter();
 
-
+	
 
 
 	sf::Vector2f windowSize = (sf::Vector2f)FRAMEWORK.GetWindowSize();
@@ -38,20 +62,40 @@ void SceneGame::Enter()
 	uiView.setSize((windowSize));
 	uiView.setSize((centerPos));
 
-	TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
+	tileMap->SetPosition({ 0.f ,0.f });
+	tileMap->SetOrigin(Origins::TL);
+	mapCenterPos = { tileMap->GetMapBounds().width / 2.f, tileMap->GetMapBounds().height / 2.f };
+	player->SetPosition(mapCenterPos);
+	spawners->SetPosition(mapCenterPos);
 
-	tileMap->SetPosition(centerPos);
-	tileMap->SetOrigin(Origins::MC);
-	tileMap->SetRotation(45);
-
-	player->SetPosition(centerPos);
-	
-	//player->SetPosition( { 500, 500 } );
+	spawners->startWave(10);
+	FindGoAll("zombie", zombieList);
 }
 
 void SceneGame::Exit()
 {
 	Scene::Exit();
+}
+
+void SceneGame::shoot()
+{
+	Bullet* bullet = nullptr;
+	if (unUsedBulletList.empty())
+	{
+		bullet = new Bullet("");
+		bullet->Init();
+	}
+	else
+	{
+		bullet = unUsedBulletList.front();
+		unUsedBulletList.pop_front();
+	}
+
+	bullet->SetActive(true);
+	bullet->SetPosition(player->GetPosition());
+	bullet->fire(player->GetLook(), 800.f);
+	usedBulletList.push_back(bullet);
+	AddGo(bullet);
 }
 
 void SceneGame::Update(float dt)
@@ -60,30 +104,78 @@ void SceneGame::Update(float dt)
 
 	worldView.setCenter(player->GetPosition());
 
-	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
+	if (player->GetPosition().x < tileMap->GetMapBounds().left)
 	{
-		Zombie::Types zombieType = (Zombie::Types)Utils::RandomRange(0, Zombie::TOtalTypes);
-		Zombie* zombie = Zombie::Create(zombieType);
-		zombie->Init();
-		zombie->Reset();
-		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f
-			+ ((sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f)
-		);
-
-		AddGo(zombie);
+		player->SetPosition({ tileMap->GetMapBounds().left, player->GetPosition().y });
+	}
+	if (player->GetPosition().x > tileMap->GetMapBounds().width)
+	{
+		player->SetPosition({ tileMap->GetMapBounds().width, player->GetPosition().y });
+	}
+	if (player->GetPosition().y < tileMap->GetMapBounds().top)
+	{
+		player->SetPosition({ player->GetPosition().x, tileMap->GetMapBounds().top });
+	}
+	if (player->GetPosition().y > tileMap->GetMapBounds().height)
+	{
+		player->SetPosition({ player->GetPosition().x, tileMap->GetMapBounds().height });
 	}
 
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Button::Left))
+	{
+		shoot();
+	}
 
-	for (auto obj : gameObjects) {
-		Zombie* zombie = dynamic_cast<Zombie*>(obj);
-		if (obj->GetActive()) {
-			float distance = Utils::Magnitude(zombie->GetLook());
-			if (distance < 10.f) {
-				RemoveGo(obj);
-				delete obj;
+	for (auto it = usedBulletList.begin(); it != usedBulletList.end();)
+	{
+		Bullet* bullet = *it;
+		if (!bullet->GetActive())
+		{
+			gameObjects.remove(*it);
+			it = usedBulletList.erase(it);
+			unUsedBulletList.push_back(bullet);
+		}
+		else
+		{
+			++it;
+		}
+
+
+		for (auto zombieGo : zombieList)
+		{
+			Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
+			if (bullet->GetBulletBound().intersects(zombie->GetZombieBound()) && !zombie->GetZombieIsDead())
+			{
+				zombie->SetZombieIsDead();
+				bullet->SetActive(false);
 			}
 		}
+
+
 	}
+
+	for (auto zombieGo : zombieList)
+	{
+		Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
+		if (zombie->GetZombieBound().intersects(player->GetPlayerBound()) && !zombie->GetZombieIsDead())
+		{
+			hpBar->SetUnderAttack(true);
+		}
+		else
+		{
+			hpBar->SetUnderAttack(false);
+		}
+	}
+
+	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
+	{
+		//hpBar->SetUnderAttack(true);
+
+		//TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
+		//tileMap->sortLayer = 1;
+		//ResortGo(tileMap);
+	}
+
 }
 
 

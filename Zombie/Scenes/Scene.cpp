@@ -86,11 +86,58 @@ void Scene::Update(float dt)
 		}
 	}
 
+	for (auto obj : resortingGameObjects)
+	{
+		auto it = std::find(gameObjects.begin(), gameObjects.end(), obj);
+		if (it != gameObjects.end())
+		{
+			gameObjects.remove(obj);
+			AddGo(obj, Layers::World);
+			continue;
+		}
+
+		it = std::find(uiGameObjects.begin(), uiGameObjects.end(), obj);
+		if (it != uiGameObjects.end())
+		{
+			uiGameObjects.remove(obj);
+			AddGo(obj, Layers::Ui);
+			continue;
+		}
+		resortingGameObjects.clear();
+
+	}
+
+	for (auto obj : removeGameObjects)
+	{
+		gameObjects.remove(obj);
+		uiGameObjects.remove(obj);
+
+		delete obj;
+	}
+	removeGameObjects.clear();
+
 }
 
 
 void Scene::Draw(sf::RenderWindow& window)
 {
+	//gameObjects.sort([](auto a, auto b) {
+	//	// a < b
+	//		if (a->sortLayer != b->sortLayer)
+	//		{
+	//			return a->sortLayer < b->sortLayer;
+	//		}
+	//		return a->sortOrder < b->sortOrder;
+	//	});
+	//uiGameObjects.sort([](auto a, auto b) {
+	//	// a < b
+	//	if (a->sortLayer != b->sortLayer)
+	//	{
+	//		return a->sortLayer < b->sortLayer;
+	//	}
+	//	return a->sortOrder < b->sortOrder;
+	//	});
+
 	const sf::View& saveView = window.getView();
 
 	window.setView(worldView);
@@ -168,18 +215,39 @@ int Scene::FindGoAll(const std::string& name, std::list<GameObject*>& list, Laye
 
 GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 {
-	if (layer == Layers::World)
+	if ((layer & Layers::World) == Layers::World)
 	{
 		if (std::find(gameObjects.begin(), gameObjects.end(), obj) == gameObjects.end())
 		{
+			auto it = gameObjects.begin();
+			while (it != gameObjects.end())
+			{
+				if (GameObject::CompareDrawOrder(obj, *it))
+				{
+					gameObjects.insert(it, obj);
+					return obj;
+				}
+				++it;
+			}
 			gameObjects.push_back(obj);
 			return obj;
 		}
 	}
+
 	if ((layer & Layers::Ui) == Layers::Ui)
 	{
 		if (std::find(uiGameObjects.begin(), uiGameObjects.end(), obj) == uiGameObjects.end())
 		{
+			auto it = uiGameObjects.begin();
+			while (it != uiGameObjects.end())
+			{
+				if (GameObject::CompareDrawOrder(obj, *it))
+				{
+					uiGameObjects.insert(it, obj);
+					return obj;
+				}
+				++it;
+			}
 			uiGameObjects.push_back(obj);
 			return obj;
 		}
@@ -188,8 +256,13 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 	return nullptr;
 }
 
+void Scene::ResortGo(GameObject* obj)
+{
+	resortingGameObjects.push_back(obj);
+}
+
 void Scene::RemoveGo(GameObject* obj)
 {
-	gameObjects.remove(obj);
-	uiGameObjects.remove(obj);
+	//obj->SetActive(false);
+	removeGameObjects.push_back(obj);
 }
