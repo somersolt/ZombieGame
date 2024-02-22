@@ -32,5 +32,7 @@ public:
 	void SetUnderAttack(bool setisUnderAttack);
 
 	const bool GetUnderAttack() const { return isUnderAttack; }
+	const float GetPlayerHp() const { return  hpBarMaxSize.x; }
+
 };
 

@@ -104,6 +104,9 @@ void SceneGame::Update(float dt)
 
 	worldView.setCenter(player->GetPosition());
 
+
+
+	// 플레이어 - 외곽 타일 충돌 처리
 	if (player->GetPosition().x < tileMap->GetMapBounds().left)
 	{
 		player->SetPosition({ tileMap->GetMapBounds().left, player->GetPosition().y });
@@ -121,11 +124,15 @@ void SceneGame::Update(float dt)
 		player->SetPosition({ player->GetPosition().x, tileMap->GetMapBounds().height });
 	}
 
+
+	
 	if (InputMgr::GetMouseButtonDown(sf::Mouse::Button::Left))
 	{
 		shoot();
 	}
 
+
+	// 사용한 총알 회수
 	for (auto it = usedBulletList.begin(); it != usedBulletList.end();)
 	{
 		Bullet* bullet = *it;
@@ -140,7 +147,7 @@ void SceneGame::Update(float dt)
 			++it;
 		}
 
-
+		//회수하는김에 좀비 - 총알 충돌 처리
 		for (auto zombieGo : zombieList)
 		{
 			Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
@@ -154,6 +161,7 @@ void SceneGame::Update(float dt)
 
 	}
 
+	// 플레이어 - 좀비 충돌 처리 ( 체력 감소 )
 	for (auto zombieGo : zombieList)
 	{
 		Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
@@ -165,6 +173,12 @@ void SceneGame::Update(float dt)
 		{
 			hpBar->SetUnderAttack(false);
 		}
+	}
+	
+	// 게임 오버
+	if (hpBar->GetPlayerHp() == 0)
+	{
+		// TODO 게임 오버 상태로
 	}
 
 	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
