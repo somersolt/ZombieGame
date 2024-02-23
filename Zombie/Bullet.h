@@ -13,6 +13,8 @@ protected:
 
 public:
 	Bullet(const std::string& name = "");
+	~Bullet() override = default;
+
 
 	void SetPosition(const sf::Vector2f& pos) override;
 	void Translate(const sf::Vector2f& delta) override;
