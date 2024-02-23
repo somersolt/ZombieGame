@@ -5,6 +5,21 @@ TileMap::TileMap(const std::string& name) : GameObject(name)
 {
 }
 
+sf::FloatRect TileMap::GetLocalBounds()
+{
+	sf::FloatRect bounds = va.getBounds();
+	bounds.left = origin.x;
+	bounds.top = origin.y;
+
+	return bounds;
+}
+
+sf::FloatRect TileMap::GetGlobalBounds()
+{
+	sf::FloatRect bounds = va.getBounds();
+	return transform.transformRect(bounds);
+}
+
 void TileMap::SetSpriteSheetId(const std::string& id)
 {
 	spriteSheetId = id;
@@ -81,8 +96,8 @@ void TileMap::SetOrigin(Origins preset)
 
 	originPreset = preset;
 	sf::FloatRect bound = va.getBounds();
-	origin.x = bound.width * ((int)preset % 3) * 0.5f;
-	origin.y = bound.height * ((int)preset / 3) * 0.5f;
+	origin.x = bound.width * ((int)originPreset % 3) * 0.5f;
+	origin.y = bound.height * ((int)originPreset / 3) * 0.5f;
 
 	UpdateTransform();
 
@@ -136,7 +151,7 @@ void TileMap::Init()
 {
 	GameObject::Init();
 	SetSpriteSheetId("graphics/background_sheet.png");
-	Set({ 20, 10 }, { 50, 50 });
+	Set({ 30, 10 }, { 50, 50 });
 }
 
 void TileMap::Release()
@@ -147,6 +162,9 @@ void TileMap::Release()
 void TileMap::Reset()
 {
 	GameObject::Reset();
+
+	//auto bounds = GetGlobalBounds();
+	//std::cout << bounds.left << " " << bounds.top << " " << bounds.width << " " << bounds.height << std::endl;
 }
 
 void TileMap::Update(float dt)

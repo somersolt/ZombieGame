@@ -27,11 +27,14 @@ protected:
 
 	std::list<GameObject*> zombieList;
 
-	sf::Vector2f HpBarPos = (sf::Vector2f)FRAMEWORK.GetWindowSize();
+	sf::Vector2f HpBarPos = { 1920 / 2 , 900};
 	HpBar* hpBar = nullptr;
 public:
 	SceneGame(SceneIds id);
 	~SceneGame() override = default;
+
+	sf::Vector2f ClampByTileMap(const sf::Vector2f& point);
+
 	void Init() override;
 	void Release() override;
 

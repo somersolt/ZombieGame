@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Player.h"
+#include "TileMap.h"
+#include "SceneGame.h"
 
 Player::Player(const std::string& name) : SpriteGo(name)
 {
@@ -22,6 +24,7 @@ void Player::Release()
 void Player::Reset()
 {
 	SpriteGo::Reset();
+	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
 }
 
 void Player::Update(float dt)
@@ -43,8 +46,13 @@ void Player::Update(float dt)
 		Utils::Normalize(direction);
 	}
 
-	Translate(direction * speed * dt);
-
+	sf::Vector2f pos = position + direction * speed * dt;
+	
+	if (sceneGame != nullptr)
+	{
+		pos = sceneGame->ClampByTileMap(pos);
+	}
+	SetPosition(pos);
 }
 
 void Player::Draw(sf::RenderWindow& window)

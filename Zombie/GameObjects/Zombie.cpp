@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Zombie.h"
+#include "TileMap.h"
+#include "SceneGame.h"
 
 Zombie::Zombie(const std::string& name) : SpriteGo(name)
 {
@@ -46,7 +48,10 @@ void Zombie::Release()
 void Zombie::Reset()
 {
 	SpriteGo::Reset();
+	speed = Utils::RandomRange(30, 130);
 	player = dynamic_cast<Player*>(SCENE_MGR.GetCurrentScene()->FindGo("Player"));
+	tileMap = dynamic_cast<TileMap*>(SCENE_MGR.GetCurrentScene()->FindGo("Background"));
+	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
 }
 
 void Zombie::Update(float dt)
@@ -59,12 +64,14 @@ void Zombie::Update(float dt)
 		Utils::Normalize(look);
 		SetRotation(Utils::Angle(look));
 
-		Translate(look * speed * dt);
 
-		//if (Utils::Distance(position, player->GetPosition()) < 50.f)
-		//{
-		//	SCENE_MGR.GetCurrentScene()->RemoveGo(this);
-		//} // 삭제하는 테스트 코드
+		sf::Vector2f pos = position + look * speed * dt;
+		if (sceneGame != nullptr)
+		{
+			pos = sceneGame->ClampByTileMap(pos);
+		}
+		SetPosition(pos);
+
 
 	}
 
@@ -75,6 +82,10 @@ void Zombie::Update(float dt)
 	
 
 
+	//if (InputMgr::GetKeyDown(sf::Keyboard::Space))
+	//{
+	//	SCENE_MGR.GetCurrentScene()->RemoveGo(this);
+	//} 좀비 삭제 테스트 코드
 
 }
 

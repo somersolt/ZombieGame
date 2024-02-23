@@ -2,6 +2,9 @@
 #include "SpriteGo.h"
 #include "Player.h"
 #include "Bullet.h"
+
+class TileMap;
+class SceneGame;
 class Zombie : public SpriteGo
 {
 
@@ -19,6 +22,9 @@ protected:
 	Types type;
 	int maxHp;
 	float speed;
+
+	TileMap* tileMap = nullptr;
+	SceneGame* sceneGame = nullptr;
 
 	int hp;
 	sf::Vector2f look = { 1.0f, 0.f };

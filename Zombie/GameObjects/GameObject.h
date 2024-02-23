@@ -85,5 +85,10 @@ public:
 	std::string name = "";
 	int sortLayer = 0;
 	int sortOrder = 0;
+
+	virtual sf::FloatRect GetLocalBounds() { return sf::FloatRect(); }
+	virtual sf::FloatRect GetGlobalBounds() { return sf::FloatRect(position, { 0.f , 0.f });}
+
+
 };
 
