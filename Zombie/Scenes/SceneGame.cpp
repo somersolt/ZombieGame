@@ -20,6 +20,14 @@ sf::Vector2f SceneGame::ClampByTileMap(const sf::Vector2f& point)
 	return Utils::Clamp(point, rect);
 }
 
+bool SceneGame::IsInTileMap(const sf::Vector2f& pos)
+{
+	sf::FloatRect rect = tileMap->GetGlobalBounds();
+	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f);
+
+	return rect.contains(pos);
+}
+
 void SceneGame::Init()
 {
 	tileMap = new TileMap("Background");
@@ -32,10 +40,8 @@ void SceneGame::Init()
 	spawners = new ZombieSpawner();
 	AddGo(spawners);
 
-	sf::Vector2f hpSize(300.f, 50.f);
 	hpBar = new HpBar("hpBar");
-	hpBar->SetSize(hpSize);
-	hpBar->SetSpeed(10);
+	hpBar->SetSize({ (float)player->GetHp(), 50.f });
 	hpBar->Reset();
 	hpBar->SetOrigin(Origins::MC);
 	HpBarPos.x *= 0.5f;
@@ -76,7 +82,7 @@ void SceneGame::Enter()
 	player->SetPosition(mapCenterPos);
 	spawners->SetPosition(mapCenterPos);
 
-	spawners->startWave(10);
+	//spawners->startWave(10);
 	FindGoAll("zombie", zombieList);
 }
 
@@ -87,37 +93,39 @@ void SceneGame::Exit()
 
 void SceneGame::shoot()
 {
-	Bullet* bullet = nullptr;
+	//Bullet* bullet = nullptr;
 
-	if (unUsedBulletList.empty())
-	{
-		bullet = new Bullet("");
-		bullet->Init();
+	//if (unUsedBulletList.empty())
+	//{
+	//	bullet = new Bullet("");
+	//	bullet->Init();
 
-	}
-	else
-	{
-		bullet = unUsedBulletList.front();
-		unUsedBulletList.pop_front();
+	//}
+	//else
+	//{
+	//	bullet = unUsedBulletList.front();
+	//	unUsedBulletList.pop_front();
 
-	}
+	//}
 
-	bullet->SetActive(true);
+	//bullet->SetActive(true);
 
-	bullet->SetPosition(player->GetPosition());
+	//bullet->SetPosition(player->GetPosition());
 
-	bullet->fire(player->GetLook(), 800.f);
+	//bullet->fire(player->GetLook(), 800.f);
 
-	usedBulletList.push_back(bullet);
-	AddGo(bullet);
+	//usedBulletList.push_back(bullet);
+	//AddGo(bullet);
 }
 
 void SceneGame::Update(float dt)
 {
+	FindGoAll("zombie", zombieList, Layers::World);
+
 	Scene::Update(dt);
 
 	worldView.setCenter(player->GetPosition());
-
+	hpBar->SetCurrSize({ (float)player->GetHp(), 50.f });
 
 	
 	if (InputMgr::GetMouseButton(sf::Mouse::Button::Left))
@@ -125,49 +133,26 @@ void SceneGame::Update(float dt)
 		shoot();
 	}
 
-	
-	// 사용한 총알 회수
-	for (auto it = usedBulletList.begin(); it != usedBulletList.end();)
-	{
-		Bullet* bullet = *it;
-		if (!bullet->GetActive())
-		{
-			gameObjects.remove(*it);
-			it = usedBulletList.erase(it);
-			unUsedBulletList.push_back(bullet);
-		}
-		else
-		{
-			++it;
-		}
 
-		//회수하는김에 좀비 - 총알 충돌 처리
-		for (auto zombieGo : zombieList)
-		{
-			Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
-			if (bullet->GetBulletBound().intersects(zombie->GetZombieBound()) && !zombie->GetZombieIsDead())
-			{
-				bullet->SetActive(false);
-				zombie->SetZombieIsDead();
-			}
-		}
+	//}	{
+	//	Bullet* bullet = *it;
+	//	if (!bullet->GetActive())
+	//	{
 
-
-	}
 
 	// 플레이어 - 좀비 충돌 처리 ( 체력 감소 )
-	for (auto zombieGo : zombieList)
-	{
-		Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
-		if (zombie->GetZombieBound().intersects(player->GetPlayerBound()) && !zombie->GetZombieIsDead())
-		{
-			hpBar->SetUnderAttack(true);
-		}
-		else
-		{
-			hpBar->SetUnderAttack(false);
-		}
-	}
+	//for (auto zombieGo : zombieList)
+	//{
+	//	Zombie* zombie = dynamic_cast<Zombie*>(zombieGo);
+	//	if (zombie->GetZombieBound().intersects(player->GetPlayerBound()) && !zombie->GetZombieIsDead())
+	//	{
+	//		hpBar->SetUnderAttack(true);
+	//	}
+	//	else
+	//	{
+	//		hpBar->SetUnderAttack(false);
+	//	}
+	//}
 
 	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
 	{
@@ -199,6 +184,17 @@ void SceneGame::Update(float dt)
 		//tileMap->sortLayer = 1;
 		//ResortGo(tileMap);
 	}
+
+}
+
+void SceneGame::LateUpdate(float dt)
+{
+	Scene::LateUpdate(dt);
+}
+
+void SceneGame::FixedUpdate(float dt)
+{
+	Scene::FixedUpdate(dt);
 
 }
 

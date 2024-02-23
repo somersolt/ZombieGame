@@ -1,84 +1,71 @@
 #include "pch.h"
 #include "Bullet.h"
-
-Bullet::Bullet(const std::string& name) : GameObject (name)
+#include "SceneGame.h"
+#include "Zombie.h"
+Bullet::Bullet(const std::string& name) : SpriteGo (name)
 {
 }
 
-void Bullet::SetPosition(const sf::Vector2f& pos)
+void Bullet::Fire(sf::Vector2f dir, float s, int d)
 {
-	position = pos;
-	shape.setPosition(pos);
-}
-
-void Bullet::Translate(const sf::Vector2f& delta)
-{
-	position += delta;
-	shape.setPosition(position);
-}
-
-void Bullet::SetOrigin(Origins preset)
-{
-	if (preset == Origins::Custom)
-	{
-		preset = Origins::TL;
-	}
-	originPreset = preset;
-	origin = Utils::SetOrigin(shape, originPreset);
-}
-
-void Bullet::SetOrigin(const sf::Vector2f& newOrigin)
-{
-	originPreset = Origins::Custom;
-	origin = newOrigin;
-	shape.setOrigin(newOrigin);
-}
-
-void Bullet::SetScale(const sf::Vector2f& scale)
-{
-	shape.setScale(scale);
-}
-
-void Bullet::fire(sf::Vector2f d, float s)
-{
-	direction = d;
+	direction = dir;
 	speed = s;
+	SetRotation(Utils::Angle(direction));
 }
 
 void Bullet::Init()
 {
 	GameObject::Init();
-	shape.setRadius(10.f);
-	shape.setFillColor(sf::Color::White);
-	Utils::SetOrigin(shape, Origins::MC);
-}
-
-void Bullet::Release()
-{
-	GameObject::Release();
+	SetTexture("graphics/bullet.png");
+	SetOrigin(Origins::ML);
 }
 
 void Bullet::Update(float dt)
 {
 	GameObject::Update(dt);
-	timer += dt;
-	sf::Vector2f pos = shape.getPosition();
-	pos += direction * speed * dt;
-	shape.setPosition(pos);
-	if (timer > duration)
+	
+	sf::Vector2f pos = position + direction * speed * dt;
+	if (sceneGame != nullptr)
 	{
-		timer = 0;
-		SetActive(false);
+		if (!sceneGame->IsInTileMap(position))
+		{
+			SetActive(false);
+			sceneGame->RemoveGo(this);
+		}
 	}
+
+	SetPosition(pos);
 }
 
 
 void Bullet::Reset()
 {
+	SpriteGo::Reset();
+	sprite.setScale({ 2.f , 2.f });
+	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
+
 }
 
-void Bullet::Draw(sf::RenderWindow& window)
+void Bullet::FixedUpdate(float dt)
 {
-	GameObject::Draw(window);
-	window.draw(shape);
+	const std::list<GameObject*>& list = sceneGame->GetZombieList();
+	for (auto go : list)
+	{
+		if (!go->GetActive())
+		{
+			continue;
+		}
+
+		if (GetGlobalBounds().intersects(go->GetGlobalBounds()))
+		{
+			SetActive(false);
+			sceneGame->RemoveGo(this);
+
+			Zombie* zombie = dynamic_cast<Zombie*>(go);
+			if (zombie != nullptr)
+				zombie->OnDamage(10);
+
+			break;
+		}
+	}
 }

@@ -22,6 +22,9 @@ protected:
 	Types type;
 	int maxHp;
 	float speed;
+	int damage;
+	float attackInterval;
+	float timer = 0.f;
 
 	TileMap* tileMap = nullptr;
 	SceneGame* sceneGame = nullptr;
@@ -32,7 +35,7 @@ protected:
 	Bullet* bullet;
 	Zombie(const std::string& name = "");
 
-	bool isDead = false;
+	bool isAlive = true;
 
 public:
 	~Zombie() override = default;
@@ -44,9 +47,10 @@ public:
 	void Draw(sf::RenderWindow& window) override;
 
 
-	void SetZombieIsDead();
-	const bool GetZombieIsDead() const { return isDead; }
 	const sf::FloatRect GetZombieBound() const { return sprite.getGlobalBounds(); }
+
+	void OnDamage(int damage);
+	void OnDie();
 
 };
 

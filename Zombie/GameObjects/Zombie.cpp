@@ -17,16 +17,22 @@ Zombie* Zombie::Create(Types zombieType)
 		zombie->textureId = "graphics/bloater.png";
 		zombie->maxHp = 40;
 		zombie->speed =  100;
+		zombie->damage = 100;
+		zombie->attackInterval = 1;
 		break;
 	case Zombie::Types::Chaser:
 		zombie->textureId = "graphics/chaser.png";
 		zombie->maxHp = 70;
 		zombie->speed = 75;
+		zombie->damage = 40;
+		zombie->attackInterval = 0.5;
 		break;
 	case Zombie::Types::Crawler:
 		zombie->textureId = "graphics/crawler.png";
 		zombie->maxHp = 20;
 		zombie->speed = 50;
+		zombie->damage = 20;
+		zombie->attackInterval = 0.25;
 		break;
 	}
 
@@ -48,16 +54,19 @@ void Zombie::Release()
 void Zombie::Reset()
 {
 	SpriteGo::Reset();
+	hp = maxHp;
 	speed = Utils::RandomRange(30, 130);
 	player = dynamic_cast<Player*>(SCENE_MGR.GetCurrentScene()->FindGo("Player"));
 	tileMap = dynamic_cast<TileMap*>(SCENE_MGR.GetCurrentScene()->FindGo("Background"));
 	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
+	isAlive = true;
 }
 
 void Zombie::Update(float dt)
 {
-	if(!isDead)
-	{
+	if (!isAlive)
+		return;
+	
 		SpriteGo::Update(dt);
 
 		look = player->GetPosition() - position;
@@ -75,10 +84,6 @@ void Zombie::Update(float dt)
 
 	}
 
-	if (isDead)
-	{
-		this->SetTexture("graphics/blood.png");
-	}
 	
 
 
@@ -87,14 +92,31 @@ void Zombie::Update(float dt)
 	//	SCENE_MGR.GetCurrentScene()->RemoveGo(this);
 	//} 좀비 삭제 테스트 코드
 
-}
 
 void Zombie::Draw(sf::RenderWindow& window)
 {
 	SpriteGo::Draw(window);
 }
 
-void Zombie::SetZombieIsDead()
+void Zombie::OnDamage(int damage)
 {
-	isDead = true;
+	if (!isAlive)
+		return;
+	
+	hp -= damage;
+	if (hp <= 0)
+	{
+		hp = 0;
+		OnDie();
+	}
+}
+
+void Zombie::OnDie()
+{
+	if (!isAlive)
+		return;
+	
+	isAlive = false;
+	SetActive(false);
+	sceneGame->RemoveGo(this);
 }

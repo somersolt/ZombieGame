@@ -8,8 +8,19 @@ protected:
 	sf::Vector2f direction = { 0.f, 0.f };
 	sf::Vector2f look = { 1.0f, 0.f };
 	float speed = 500.f;
+	int bulletDamage = 0;
+
+	int hp = 100;
 
 	SceneGame* sceneGame = nullptr;
+
+	bool isFiring = false;
+	float bulletSpeed = 800.f;
+	float fireInterval = 0.3f;
+	float fireTimer = 0.f;
+
+	float DamageInterval = 0.5f;
+	float DamageTimer = 0.f;
 
 public:
 	Player(const std::string& name = "");
@@ -22,10 +33,16 @@ public:
 	void Reset();
 
 	void Update(float dt);
+	void FixedUpdate(float dt);
 	void Draw(sf::RenderWindow& window);
 
+	void Fire();
+
 	const sf::Vector2f GetLook() const { return look; }
+	const int GetHp() const { return hp; }
 	const sf::FloatRect GetPlayerBound() const { return sprite.getGlobalBounds(); }
 
+	void OnDamage(int damage);
+	void OnDie();
 };
 

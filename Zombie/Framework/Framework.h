@@ -18,12 +18,15 @@ protected:
 
 	sf::Clock clock;
 	float timeScale = 1.f;
+	float fixedUpdateTime = 1.f / 50.f;
 
 	sf::Time realTime; // 게임 시작부터 경과 시간
 	sf::Time time; // 게임 시작부터 경과 시간 (timeScale 적용된...)
 
 	sf::Time realDeltaTime;
 	sf::Time deltaTime;
+
+	sf::Time fixedDeltaTime;
 
 public:
 	sf::RenderWindow& GetWindow() { return window; }	// !!

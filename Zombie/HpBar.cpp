@@ -28,21 +28,9 @@ void HpBar::SetValue(float value)
 void HpBar::Update(float dt)
 {
 	GameObject::Update(dt);
-	
-	if (isUnderAttack)
-	{
-		hpBarCurrSize.x += hpBarSpeed * dt;
-		hpBar.setSize(hpBarCurrSize);
 
-		if (hpBarCurrSize.x <= 0.f)
-		{
-			hpBarCurrSize.x = 0.f;
-		}
-		if (hpBarCurrSize.x > hpBarMaxSize.x)
-		{
-			hpBarCurrSize.x = hpBarMaxSize.x;
-		}
-	}
+	hpBar.setSize(hpBarCurrSize);
+
 }
 
 void HpBar::SetPosition(const sf::Vector2f pos)
@@ -70,6 +58,10 @@ void HpBar::SetOrigin(const sf::Vector2f& newOrigin)
 void HpBar::SetSize(const sf::Vector2f size)
 {
 	hpBarMaxSize = size;
+}
+void HpBar::SetCurrSize(const sf::Vector2f size)
+{
+	hpBarCurrSize = size;
 }
 
 void HpBar::SetColor(sf::Color color)

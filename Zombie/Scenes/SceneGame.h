@@ -6,7 +6,7 @@ class ZombieSpawner;
 class TileMap;
 class Bullet;
 class HpBar;
-
+class Zombie;
 class SceneGame : public Scene
 {
 protected:
@@ -33,7 +33,11 @@ public:
 	SceneGame(SceneIds id);
 	~SceneGame() override = default;
 
+	const std::list<GameObject*>& GetZombieList() const { return zombieList; }
+
 	sf::Vector2f ClampByTileMap(const sf::Vector2f& point);
+
+	bool IsInTileMap(const sf::Vector2f& pos);
 
 	void Init() override;
 	void Release() override;
@@ -44,6 +48,10 @@ public:
 	void shoot();
 
 	void Update(float dt);
+	void LateUpdate(float dt);
+	void FixedUpdate(float dt);
+
+
 	void Draw(sf::RenderWindow& window);
 
 };

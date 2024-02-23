@@ -26,7 +26,7 @@ public:
 	void SetSize(const sf::Vector2f size);
 	void SetColor(sf::Color color);
 	void SetSpeed(float speed);
-
+	void SetCurrSize(const sf::Vector2f size);
 	void Draw(sf::RenderWindow& window) override;
 
 	void SetUnderAttack(bool setisUnderAttack);
