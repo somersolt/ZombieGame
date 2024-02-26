@@ -16,9 +16,11 @@
 
 #include "Defines.h"
 #include "Utils.h"
+
 #include "Framework.h"
 #include "InputMgr.h"
 #include "ResourceMgr.h"
+#include "SoundMgr.h"
 #include "SceneMgr.h"
 
 #include "Scene.h"

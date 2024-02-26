@@ -3,6 +3,8 @@
 #include "TileMap.h"
 #include "SceneGame.h"
 #include "Bullet.h"
+#include "Item.h"
+#include "UiHud.h"
 
 Player::Player(const std::string& name) : SpriteGo(name)
 {
@@ -18,6 +20,8 @@ void Player::Init()
 	isFiring = false;
 	fireTimer = 3.f;
 
+	hp = maxHp;
+	ammo = magazine;
 }
 
 void Player::Release()
@@ -68,13 +72,29 @@ void Player::Update(float dt)
 		isFiring = false;
 	}
 
+	if (InputMgr::GetKeyDown(sf::Keyboard::R) && totalAmmo > 0)
+	{
+		if (!isAlive)
+			return;
+
+		ammo = magazine;
+		totalAmmo -= magazine;
+		sceneGame->GetHud()->SetAmmo(ammo, totalAmmo);
+
+		if (totalAmmo < 0)
+		{
+			totalAmmo = 0;
+		}
+	}
+
 	fireTimer += dt;
-	if (isFiring && fireTimer > fireInterval)
+
+	if (isFiring && fireTimer > fireInterval && ammo > 0)
 	{
 		Fire();
-
 		fireTimer = 0.f;
 	}
+	
 
 
 }
@@ -110,17 +130,29 @@ void Player::Draw(sf::RenderWindow& window)
 
 void Player::Fire()
 {
-	std::cout << FRAMEWORK.GetTime() << ": Fire" << std::endl;
+	//std::cout << FRAMEWORK.GetTime() << ": Fire" << std::endl;
 	Bullet* bullet = new Bullet();
 	bullet->Init();
 	bullet->Reset();
 	bullet->SetPosition(position);
 	bullet->Fire(look, bulletSpeed, bulletDamage);
 	sceneGame->AddGo(bullet);
+
+	SOUND_MGR.PlaySfx("sound/shoot.wav");
+
+	if (isAlive)
+	{
+		ammo -= 1;
+		sceneGame->GetHud()->SetAmmo(ammo, totalAmmo);
+	}
+
 }
 
 void Player::OnDamage(int damage)
 {
+
+	sceneGame->GetHud()->SetHp(hp, maxHp);
+
 	hp -= damage;
 	if (hp <= 0)
 	{
@@ -133,4 +165,26 @@ void Player::OnDie()
 {
 	SetTexture("graphics/chaser.png");
 	fireInterval = 0.01f;
+	sceneGame->GetHud()->SetHp(hp, maxHp);
+	sceneGame->GetHud()->SetAmmo(9999, 9999);
+	isAlive = false;
+}
+
+void Player::OnItem(Item* item)
+{
+	if (!isAlive)
+		return;
+
+	switch (item->GetType())
+	{
+	case Item::Types::Ammo:
+		totalAmmo += item->GetValue();
+
+		break;
+	case Item::Types::Health:
+		hp += item->GetValue();
+		break;
+	}
+	sceneGame->GetHud()->SetHp(hp, maxHp);
+	sceneGame->GetHud()->SetAmmo(ammo, totalAmmo);
 }

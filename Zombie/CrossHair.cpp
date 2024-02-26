@@ -23,8 +23,8 @@ void CrossHair::Update(float dt)
 	SpriteGo::Update(dt);
 
 	sf::Vector2i mousePos = (sf::Vector2i)InputMgr::GetMousePos();
-	sf::Vector2f mouseWorldPos = SCENE_MGR.GetCurrentScene()->ScreenToWorld(mousePos);
-	SetPosition(mouseWorldPos);
+	sf::Vector2f mouseUiPos = SCENE_MGR.GetCurrentScene()->ScreenToUi(mousePos);
+	SetPosition(mouseUiPos);
 }
 
 

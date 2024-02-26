@@ -3,17 +3,24 @@
 
 class Player;
 class ZombieSpawner;
+class ItemSpawner;
+
 class TileMap;
 class Bullet;
 class HpBar;
 class Zombie;
+class UiHud;
+
 class SceneGame : public Scene
 {
 protected:
 	Player* player = nullptr;
 	ZombieSpawner* spawners = nullptr;
+	ItemSpawner* itemSpawners = nullptr;
+
 	TileMap* tileMap = nullptr;
 	sf::Vector2f mapCenterPos;
+
 
 	std::list<Bullet*> usedBulletList;
 	std::list<Bullet*> unUsedBulletList;
@@ -25,6 +32,11 @@ protected:
 	int highScore;
 	int wave;
 
+	bool waveSwitch = false;
+	float waveTimer = 0;
+
+	UiHud* hud;
+
 	std::list<GameObject*> zombieList;
 
 	sf::Vector2f HpBarPos = { 1920 / 2 , 900};
@@ -34,6 +46,11 @@ public:
 	~SceneGame() override = default;
 
 	const std::list<GameObject*>& GetZombieList() const { return zombieList; }
+
+	UiHud* GetHud() const
+	{
+		return hud;
+	}
 
 	sf::Vector2f ClampByTileMap(const sf::Vector2f& point);
 
@@ -45,7 +62,6 @@ public:
 	void Enter() override;
 	void Exit() override;
 
-	void shoot();
 
 	void Update(float dt);
 	void LateUpdate(float dt);

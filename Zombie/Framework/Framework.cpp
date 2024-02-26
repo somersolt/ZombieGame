@@ -11,6 +11,7 @@ void Framework::Init(int width, int height, const std::string& name)
     window.create(sf::VideoMode(windowSize.x, windowSize.y), name);
 
     InputMgr::Init();
+    SOUND_MGR.Init();
     SCENE_MGR.Init();
 }
 
@@ -39,7 +40,8 @@ void Framework::Do()
 
         SCENE_MGR.Update(GetDT());
         SCENE_MGR.LateUpdate(GetDT());
-        
+        SOUND_MGR.Update(GetDT());
+
         float fdt = fixedDeltaTime.asSeconds();
         if (fdt > fixedUpdateTime)
         {
@@ -56,6 +58,7 @@ void Framework::Do()
 void Framework::Release()
 {
     SCENE_MGR.Release();
+    SOUND_MGR.Release();
     
     RES_MGR_TEXTURE.UnloadAll();
     RES_MGR_FONT.UnloadAll();
