@@ -13,6 +13,13 @@ class UiHud;
 
 class SceneGame : public Scene
 {
+public:
+	enum class Status
+	{
+		Playing,
+		NextWave,
+	};
+
 protected:
 	Player* player = nullptr;
 	ZombieSpawner* spawners = nullptr;
@@ -23,17 +30,16 @@ protected:
 
 
 	std::list<Bullet*> usedBulletList;
-	std::list<Bullet*> unUsedBulletList;
+	std::list<GameObject*> unUsedBulletList;
+
+	Status currentStatus;
 
 	int currentBullet;
 	int totalBullet;
 
 	int score;
 	int highScore;
-	int wave;
-
-	bool waveSwitch = false;
-	float waveTimer = 0;
+	int wave = 1;
 
 	UiHud* hud;
 
@@ -51,6 +57,10 @@ public:
 	{
 		return hud;
 	}
+
+	Status GetStatus() const {	return currentStatus;	}
+	void SetStatus(Status newStatus);
+
 
 	sf::Vector2f ClampByTileMap(const sf::Vector2f& point);
 

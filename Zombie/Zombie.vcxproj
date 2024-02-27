@@ -139,6 +139,8 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CrossHair.cpp" />
+    <ClCompile Include="DataTable.cpp" />
+    <ClCompile Include="DataTableMgr.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\InputMgr.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -169,14 +171,19 @@
     <ClCompile Include="SoundMgr.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SpriteGoEffect.cpp" />
+    <ClCompile Include="StringTable.cpp" />
     <ClCompile Include="UiHud.cpp" />
+    <ClCompile Include="ZombieTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CrossHair.h" />
+    <ClInclude Include="DataTable.h" />
+    <ClInclude Include="DataTableMgr.h" />
     <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\Defines.h" />
     <ClInclude Include="Framework\InputMgr.h" />
+    <ClInclude Include="Framework\rapidcsv.h" />
     <ClInclude Include="Framework\ResourceMgr.h" />
     <ClInclude Include="Framework\Singleton.h" />
     <ClInclude Include="Framework\Utils.h" />
@@ -198,7 +205,9 @@
     <ClInclude Include="SoundMgr.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="SpriteGoEffect.h" />
+    <ClInclude Include="StringTable.h" />
     <ClInclude Include="UiHud.h" />
+    <ClInclude Include="ZombieTable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

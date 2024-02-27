@@ -8,13 +8,15 @@ private:
 	SoundMgr();
 	virtual ~SoundMgr();
 
-	std::vector <sf::Sound*> bgm[2];
+	sf::Sound bgm[2];
 	int frontBgmIndex = 0;
 
 	bool isFading = false;
-	float crossFadeDuration = 2.f;
+	float crossFadeDuration = 3.f;
 	float crossFadeTimer = 0.0;
 
+	float fadeSpeed = 0.25f;
+	float fadeLimit = 0.05f;
 
 	std::list <sf::Sound*> playing;
 	std::list <sf::Sound*> waiting;

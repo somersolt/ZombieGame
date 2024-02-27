@@ -30,63 +30,93 @@ void SoundMgr::Release()
 
 void SoundMgr::Update(float dt)
 {
-	const std::list<sf::Sound*>& list = playing;
-	for (auto it = list.begin(); it != list.end(); )
+	for (auto go = playing.begin(); go != playing.end();)
 	{
-		sf::Sound* sound = *it;
-		if (sound->getStatus() == sf::Sound::Status::Stopped)
+		sf::Sound* sound = *go;
+		if (sound->getStatus() == sf::SoundSource::Stopped)
 		{
+			go = playing.erase(go);
 			waiting.push_back(sound);
-			it = playing.erase(it);
 		}
 		else
 		{
-			++it;
+			++go;
 		}
+	}
+
+	if (InputMgr::GetKeyDown(sf::Keyboard::Num1))
+	{
+		PlayBgm("sound/cuning.mp3");
+	}
+	if (InputMgr::GetKeyDown(sf::Keyboard::Num2))
+	{
+		PlayBgm("sound/sans.mp3");
+	}
+
+
+	if (InputMgr::GetKeyDown(sf::Keyboard::Num3))
+	{
+		bgmVolume = 5.f;
+	}
+
+	if (InputMgr::GetKeyDown(sf::Keyboard::Num4))
+	{
+		bgmVolume = 100.f;
 	}
 
 	if (isFading)
 	{
-		sf::Sound* Bgm = nullptr;
-		sf::Sound* oldBgm = nullptr;
-		crossFadeTimer += dt;
+		bool isEndFront = false;
+		bool isEndBack = false;
 
-
-		Bgm = bgm->front();
-		oldBgm = bgm->back();
-		Bgm->setVolume(Bgm->getVolume() + (100 - 0) / crossFadeDuration * dt);
-		oldBgm->setVolume(Bgm->getVolume() - (100 - 0) / crossFadeDuration * dt);
-
-		if (crossFadeTimer > crossFadeDuration)
+		int backBgmIndex = (frontBgmIndex == 1) ? 0 : 1;
+		
+		float backVolume = bgm[backBgmIndex].getVolume();
+		backVolume = Utils::Lerp(backVolume, 0.f, fadeSpeed * dt);
+		bgm[backBgmIndex].setVolume(backVolume);
+		if (std::abs(backVolume) < fadeLimit)
 		{
-			isFading = false;
-			oldBgm->stop();
-			bgm->pop_back();
-			crossFadeTimer = 0;
+			bgm[backBgmIndex].setVolume(0.f);
+			bgm[backBgmIndex].stop();
+			bool isEndBack = true;
+
 		}
 
+		float frontVolume = bgm[frontBgmIndex].getVolume();
+		frontVolume = Utils::Lerp(frontVolume, bgmVolume, fadeSpeed * dt);
+		bgm[frontBgmIndex].setVolume(frontVolume);
+
+		if (std::abs(bgmVolume - frontVolume) < fadeLimit)
+		{
+			bgm[frontBgmIndex].setVolume(bgmVolume);
+			bool isEndFront = true;
+		}
+		if (isEndFront && isEndBack)
+		{
+			isFading = false;
+		}
 	}
+	
 
 }
 
 void SoundMgr::PlayBgm(std::string id)
 {
-	sf::Sound* Bgm = nullptr;
-	sf::Sound* oldBgm = nullptr;
+	isFading = true;
+	frontBgmIndex = (frontBgmIndex + 1) % 2; // 0 1 0 1 0 1
+	int backBgmIndex = (frontBgmIndex == 1) ? 0 : 1;
 
-	if (!bgm->empty())
-	{
-		isFading = true;
-		oldBgm = bgm->front();
-	}
-		bgm->insert(bgm->begin(), Bgm);
-		Bgm->setLoop(true);
-		Bgm->setVolume(0);
-		Bgm->play();
+	bgm[frontBgmIndex].setBuffer(RES_MGR_SOUND_BUFFER.Get(id));
+	bgm[frontBgmIndex].setVolume(0.f);
+	bgm[frontBgmIndex].setLoop(true);
+	bgm[frontBgmIndex].play();
 }
 
 void SoundMgr::StopBgm()
 {
+	isFading = false;
+	bgm[0].stop();
+	bgm[1].stop();
 }
 
 void SoundMgr::PlaySfx(std::string id, bool loop)

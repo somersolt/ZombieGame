@@ -13,6 +13,20 @@ SceneGame::SceneGame(SceneIds id) : Scene(id)
 {
 }
 
+void SceneGame::SetStatus(Status newStatus)
+{
+	currentStatus = newStatus;
+	switch (currentStatus)
+	{
+	case SceneGame::Status::Playing:
+		FRAMEWORK.SetTimeScale(1.f);
+		break;
+	case SceneGame::Status::NextWave:
+		FRAMEWORK.SetTimeScale(0.f);
+		break;
+	}
+}
+
 sf::Vector2f SceneGame::ClampByTileMap(const sf::Vector2f& point)
 {
 	sf::FloatRect rect = tileMap->GetGlobalBounds();
@@ -65,7 +79,6 @@ void SceneGame::Enter()
 
 	FRAMEWORK.GetWindow().setMouseCursorVisible(false);
 
-
 	sf::Vector2f windowSize = (sf::Vector2f)FRAMEWORK.GetWindowSize();
 	sf::Vector2f centerPos = (sf::Vector2f)FRAMEWORK.GetWindowSize() * 0.5f;
 
@@ -85,10 +98,11 @@ void SceneGame::Enter()
 	hud->SetScore(0);
 	hud->SetHiScore(0);
 	hud->SetAmmo(player->GetAmmo(), player->GetTotalAmmo());
-	hud->SetWave(0);
-	spawners->startWave(hud->GetWave() * 10);
+	hud->SetWave(wave);
+	spawners->startWave(wave * 10);
 
-	FindGoAll("zombie", zombieList);
+	SetStatus(Status::Playing);
+
 }
 
 void SceneGame::Exit()
@@ -105,19 +119,19 @@ void SceneGame::Update(float dt)
 	Scene::Update(dt);
 
 
-	worldView.setCenter(player->GetPosition());
+	//worldView.setCenter(player->GetPosition());
+
+	sf::Vector2f worldViewCenter = worldView.getCenter();
+	worldViewCenter = Utils::Lerp(worldViewCenter, player->GetPosition(), dt * 0.5f);
+	worldView.setCenter(worldViewCenter);
+
+	// 카메라 선형보간
 
 	if (hud->GetScore() > hud->GetHiScore())
 	{
 		hud->SetHiScore(hud->GetScore());
 	}
 
-
-	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
-	{
-		spawners->startWave(20);
-		FindGoAll("zombie", zombieList);
-	}
 	if (InputMgr::GetKeyDown(sf::Keyboard::Enter))
 	{
 
@@ -132,24 +146,28 @@ void SceneGame::Update(float dt)
 	hud->SetZombieCount(zombieList.size());
 
 
-
-	if (zombieList.empty())
+	switch (currentStatus)
 	{
-		waveSwitch = true;
-	}
-
-	if (waveSwitch)
-	{
-		waveTimer += dt;
-
-		if (waveTimer > 2.0)
+	case SceneGame::Status::Playing:
+		if (zombieList.size() == 0)
+			SetStatus(Status::NextWave);
+		break;
+	case SceneGame::Status::NextWave:
+		if (InputMgr::GetKeyDown(sf::Keyboard::Space))
 		{
-			hud->NextWave(hud->GetWave());
-			hud->SetWave(hud->GetWave());
-			spawners->startWave(hud->GetWave() * 10);
-			waveSwitch = false;
-			waveTimer = 0;
-			
+			wave++;
+			hud->SetWave(wave);
+			spawners->startWave(wave * 10);
+			SetStatus(Status::Playing);
+		}
+		break;
+	}
+	if (currentStatus == Status::NextWave)
+	{
+		FindGoAll("bullet", unUsedBulletList);
+		for (auto obj : unUsedBulletList)
+		{
+			obj->SetActive(false);
 		}
 	}
 

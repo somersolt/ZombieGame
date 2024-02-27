@@ -22,6 +22,8 @@
 #include "ResourceMgr.h"
 #include "SoundMgr.h"
 #include "SceneMgr.h"
+#include "DataTableMgr.h"
 
 #include "Scene.h"
 #include "GameObject.h"
+#include "stringTable.h"

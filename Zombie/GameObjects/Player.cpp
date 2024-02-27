@@ -131,7 +131,7 @@ void Player::Draw(sf::RenderWindow& window)
 void Player::Fire()
 {
 	//std::cout << FRAMEWORK.GetTime() << ": Fire" << std::endl;
-	Bullet* bullet = new Bullet();
+	Bullet* bullet = new Bullet("bullet");
 	bullet->Init();
 	bullet->Reset();
 	bullet->SetPosition(position);

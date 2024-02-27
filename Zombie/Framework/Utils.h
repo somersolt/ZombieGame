@@ -33,4 +33,8 @@ public:
 	static float DegreeToradian(float degree);
 
 	static float Angle(const sf::Vector2f & vec);
+
+	static float Lerp(float min, float max, float t); // 선형보간
+	static sf::Vector2f Lerp(const sf::Vector2f min, const sf::Vector2f max, float t); // 선형보간
+
 };

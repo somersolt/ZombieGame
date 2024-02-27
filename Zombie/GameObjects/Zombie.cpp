@@ -4,6 +4,7 @@
 #include "SceneGame.h"
 #include "SpriteGoEffect.h"
 #include "UiHud.h"
+#include "ZombieTable.h"
 
 Zombie::Zombie(const std::string& name) : SpriteGo(name)
 {
@@ -13,30 +14,13 @@ Zombie* Zombie::Create(Types zombieType)
 {
 	Zombie* zombie = new Zombie("zombie");
 	zombie->type = zombieType;
-	switch (zombieType)
-	{
-	case Zombie::Types::Bloater:
-		zombie->textureId = "graphics/bloater.png";
-		zombie->maxHp = 40;
-		zombie->speed =  100;
-		zombie->damage = 100;
-		zombie->attackInterval = 1;
-		break;
-	case Zombie::Types::Chaser:
-		zombie->textureId = "graphics/chaser.png";
-		zombie->maxHp = 70;
-		zombie->speed = 75;
-		zombie->damage = 40;
-		zombie->attackInterval = 0.5;
-		break;
-	case Zombie::Types::Crawler:
-		zombie->textureId = "graphics/crawler.png";
-		zombie->maxHp = 20;
-		zombie->speed = 50;
-		zombie->damage = 20;
-		zombie->attackInterval = 0.25;
-		break;
-	}
+
+	const DataZombie& data = ZOMBIE_TABLE->Get(zombieType);
+	zombie->textureId = data.textureId;
+	zombie->maxHp = data.maxHp;
+	zombie->speed = data.speed;
+	zombie->damage = data.damage;
+	zombie->attackInterval = data.attackInterval;
 
 	return zombie;
 }
