@@ -7,89 +7,89 @@ void AniTest2::Init()
 	int width = 256;
 	int height = 256;
 
-	{
-		AnimationClip clip;
-		clip.id = "IdleSide";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		clip.frames.push_back({ textureId, { 0, 3 * height, width, height } });
-		clip.frames.push_back({ textureId, { 1 * width, 5 * height, width, height } });
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/IdleSide.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	clip.frames.push_back({ textureId, { 0, 3 * height, width, height } });
+	//	clip.frames.push_back({ textureId, { 1 * width, 5 * height, width, height } });
+	//	animator.AddClip(clip);
+	//}
 
-	{
-		AnimationClip clip;
-		clip.id = "IdleDown";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		clip.frames.push_back({ textureId, { 1 * width, 3 * height, width, height } });
-		clip.frames.push_back({ textureId, { 2 * width, 5 * height, width, height } });
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/IdleDown.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	clip.frames.push_back({ textureId, { 1 * width, 3 * height, width, height } });
+	//	clip.frames.push_back({ textureId, { 2 * width, 5 * height, width, height } });
+	//	animator.AddClip(clip);
+	//}
 
-	{
-		AnimationClip clip;
-		clip.id = "IdleUp";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		clip.frames.push_back({ textureId, { 2 * width, 3 * height, width, height } });
-		clip.frames.push_back({ textureId, { 3 * width, 5 * height, width, height } });
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/IdleUp.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	clip.frames.push_back({ textureId, { 2 * width, 3 * height, width, height } });
+	//	clip.frames.push_back({ textureId, { 3 * width, 5 * height, width, height } });
+	//	animator.AddClip(clip);
+	//}
 
-	{
-		AnimationClip clip;
-		clip.id = "MoveSide";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		for (int i = 0; i < 4; ++i)
-		{
-			clip.frames.push_back({ textureId, { i * width, 0, width, height } });
-		}
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/MoveSide.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	for (int i = 0; i < 4; ++i)
+	//	{
+	//		clip.frames.push_back({ textureId, { i * width, 0, width, height } });
+	//	}
+	//	animator.AddClip(clip);
+	//}
 
-	{
-		AnimationClip clip;
-		clip.id = "MoveUp";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		for (int i = 0; i < 4; ++i)
-		{
-			clip.frames.push_back({ textureId, { i * width, 1 * height, width, height } });
-		}
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/MoveUp.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	for (int i = 0; i < 4; ++i)
+	//	{
+	//		clip.frames.push_back({ textureId, { i * width, 1 * height, width, height } });
+	//	}
+	//	animator.AddClip(clip);
+	//}
 
-	{
-		AnimationClip clip;
-		clip.id = "MoveDown";
-		clip.fps = 5;
-		clip.loopType = AnimationLoopTypes::Loop;
-		for (int i = 0; i < 4; ++i)
-		{
-			clip.frames.push_back({ textureId, { i * width, 2 * height, width, height } });
-		}
-		//animator.AddClip(clip);
-	}
+	//{
+	//	AnimationClip clip;
+	//	clip.id = "animations/MoveDown.csv";
+	//	clip.fps = 5;
+	//	clip.loopType = AnimationLoopTypes::Loop;
+	//	for (int i = 0; i < 4; ++i)
+	//	{
+	//		clip.frames.push_back({ textureId, { i * width, 2 * height, width, height } });
+	//	}
+	//	animator.AddClip(clip);
+	//}
 	animator.SetTarget(&sprite);
 
-	clipInfos.push_back({ "IdleSide", "MoveSide", false, Utils::GetNormal({ -1.f, -1.f }) });
-	clipInfos.push_back({ "IdleUp", "MoveUp", false, { 0.f, -1.f } });
-	clipInfos.push_back({ "IdleSide", "MoveSide", true, Utils::GetNormal({ 1.f, -1.f }) });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", false, Utils::GetNormal({ -1.f, -1.f }) });
+	clipInfos.push_back({ "animations/IdleUp.csv", "animations/MoveUp.csv", false, { 0.f, -1.f } });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", true, Utils::GetNormal({ 1.f, -1.f }) });
 
-	clipInfos.push_back({ "IdleSide", "MoveSide", false, { -1.f, 0.f } });
-	clipInfos.push_back({ "IdleSide", "MoveSide", true, { 1.f, 0.f } });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", false, { -1.f, 0.f } });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", true, { 1.f, 0.f } });
 
-	clipInfos.push_back({ "IdleSide", "MoveSide", false, Utils::GetNormal({ -1.f, 1.f }) });
-	clipInfos.push_back({ "IdleDown", "MoveDown", false, { 0.f, 1.f} });
-	clipInfos.push_back({ "IdleSide", "MoveSide", true, Utils::GetNormal({ 1.f, 1.f }) });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", false, Utils::GetNormal({ -1.f, 1.f }) });
+	clipInfos.push_back({ "animations/IdleDown.csv", "animations/MoveDown.csv", false, { 0.f, 1.f} });
+	clipInfos.push_back({ "animations/IdleSide.csv", "animations/MoveSide.csv", true, Utils::GetNormal({ 1.f, 1.f }) });
 
 }
 
 void AniTest2::Reset()
 {
-	animator.Play("IdleDown");
+	animator.Play("animations/IdleDown.csv");
 	SetOrigin(Origins::MC);
 	SetPosition({ 0.f, 0.f });
 	SetFlipX(false);

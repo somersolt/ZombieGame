@@ -5,6 +5,16 @@ AniTest::AniTest(const std::string& name) : SpriteGo(name)
 {
 }
 
+void AniTest::TestInstance()
+{
+	std::cout << "TestInstance()" << std::endl;
+}
+
+void AniTest::TestStatic()
+{
+	std::cout << "TestStatic()" << std::endl;
+}
+
 void AniTest::Init()
 {
 	SpriteGo::Init();
@@ -13,6 +23,13 @@ void AniTest::Init()
 
 void AniTest::Reset()
 {
+	animator.ClearEvent();
+	std::function<void()> funcInstance = std::bind(&AniTest::TestInstance, this);
+	animator.AddEvent("animations/Jump.csv", 5, funcInstance);
+
+	std::function<void()> funcStatic = std::bind(&AniTest::TestStatic);
+	animator.AddEvent("animations/Idle.csv", 5, funcStatic);
+
 	animator.Play("animations/Idle.csv");
 	SetOrigin(Origins::BC);
 	isGrounded = true;

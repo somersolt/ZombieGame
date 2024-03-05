@@ -16,6 +16,9 @@ public:
 	AniTest(const std::string& name = "");
 	~AniTest() override = default;
 
+	void TestInstance();
+	void static TestStatic();
+
 	void Init() override;
 	void Reset() override;
 	void Update(float dt) override;

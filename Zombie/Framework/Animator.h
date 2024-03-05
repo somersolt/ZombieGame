@@ -38,10 +38,19 @@ struct AnimationClip
 	bool loadFromFile(const std::string& filePath);
 };
 
+struct AnimationEvent
+{
+	std::string clipId;
+	int frame;
+	std::function<void()> action;
+};
+
+
 class Animator
 {
 protected:
 	std::queue<std::string> queue;
+	std::list<AnimationEvent> eventList;
 
 	float speed = 1.f; // animationClip의 fps의 배율: 1.f인 경우, 그대로
 
@@ -61,9 +70,8 @@ public:
 	Animator();
 	~Animator();
 
-
-
-
+	void AddEvent(const std::string& clipId, int frame, std::function<void()> action);
+	void ClearEvent();
 
 
 	// Get, Set 함수

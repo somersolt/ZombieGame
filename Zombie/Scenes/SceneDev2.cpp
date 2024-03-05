@@ -14,7 +14,7 @@ SceneDev2::~SceneDev2()
 
 void SceneDev2::Init()
 {
-	//AddGo(new AniTest2());
+	AddGo(new AniTest2());
 	
 	Scene::Init();
 }

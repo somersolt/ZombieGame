@@ -10,6 +10,16 @@ Animator::~Animator()
 {
 }
 
+void Animator::AddEvent(const std::string& clipId, int frame, std::function<void()> action)
+{
+	eventList.push_back({ clipId, frame, action });
+}
+
+void Animator::ClearEvent()
+{
+	eventList.clear();
+}
+
 void Animator::SetFrame(const AnimationFrame& frame)
 {
 	target->setTexture(frame.GetTexture());
@@ -64,6 +74,17 @@ void Animator::Update(float dt)
 			}
 
 			break;
+		}
+	}
+
+	for (auto& event : eventList)
+	{
+		if (currentClip->id == event.clipId && currentFrame == event.frame)
+		{
+			if (event.action != nullptr)
+			{
+				event.action();
+			}
 		}
 	}
 
