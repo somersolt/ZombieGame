@@ -88,7 +88,8 @@ void InputMgr::Update(float dt)
         axisInfo.value += speed * axisInfo.sensi * dt;
         axisInfo.value = Utils::Clamp(axisInfo.value, -1.f, 1.f);
 
-        if (raw == 0.f && abs(axisInfo.value) < speed * axisInfo.sensi * dt)
+        bool over = (speed > 0) ? (axisInfo.value > 0.f) : (axisInfo.value < 0.f);
+        if (raw == 0.f && over)
         {
             axisInfo.value = 0.f;
         }

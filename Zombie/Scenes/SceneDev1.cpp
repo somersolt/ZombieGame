@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "SceneDev1.h"
 #include "rapidcsv.h"
+#include "AniTest.h"
+
 SceneDev1::SceneDev1(SceneIds id) : Scene(id)
 {
 }
@@ -11,7 +13,9 @@ SceneDev1::~SceneDev1()
 
 void SceneDev1::Init()
 {
-	
+	AddGo(new AniTest());
+
+	Scene::Init();
 }
 
 void SceneDev1::Release()
@@ -36,7 +40,7 @@ void SceneDev1::Update(float dt)
 {
 	Scene::Update(dt);
 
-	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
+	if (InputMgr::GetKeyDown(sf::Keyboard::Enter))
 	{
 		SceneMgr::Instance().ChangeScene(SceneIds::SceneDev2);
 	}

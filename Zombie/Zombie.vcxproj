@@ -141,6 +141,7 @@
     <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DataTable.cpp" />
     <ClCompile Include="DataTableMgr.cpp" />
+    <ClCompile Include="Framework\Animator.cpp" />
     <ClCompile Include="Framework\Framework.cpp" />
     <ClCompile Include="Framework\InputMgr.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -148,6 +149,8 @@
     <ClCompile Include="Framework\Utils.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GameObjects\AniTest.cpp" />
+    <ClCompile Include="GameObjects\AniTest2.cpp" />
     <ClCompile Include="GameObjects\GameObject.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemSpawner.cpp" />
@@ -180,6 +183,7 @@
     <ClInclude Include="CrossHair.h" />
     <ClInclude Include="DataTable.h" />
     <ClInclude Include="DataTableMgr.h" />
+    <ClInclude Include="Framework\Animator.h" />
     <ClInclude Include="Framework\Framework.h" />
     <ClInclude Include="Framework\Defines.h" />
     <ClInclude Include="Framework\InputMgr.h" />
@@ -187,6 +191,8 @@
     <ClInclude Include="Framework\ResourceMgr.h" />
     <ClInclude Include="Framework\Singleton.h" />
     <ClInclude Include="Framework\Utils.h" />
+    <ClInclude Include="GameObjects\AniTest.h" />
+    <ClInclude Include="GameObjects\AniTest2.h" />
     <ClInclude Include="GameObjects\GameObject.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemSpawner.h" />
