@@ -3,6 +3,7 @@
 #include "rapidcsv.h"
 #include "ZombieTable.h"
 #include "AniTest2.h"
+#include "SpriteGo.h"
 
 SceneDev2::SceneDev2(SceneIds id) : Scene(id)
 {
@@ -14,9 +15,13 @@ SceneDev2::~SceneDev2()
 
 void SceneDev2::Init()
 {
-	AddGo(new AniTest2());
-	
 	Scene::Init();
+
+	background = new SpriteGo("");
+	background->SetTexture("graphics/cillpenguin.png");
+	AddGo(background);
+
+	AddGo(new AniTest2());
 }
 
 void SceneDev2::Release()

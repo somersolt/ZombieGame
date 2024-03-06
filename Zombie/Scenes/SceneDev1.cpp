@@ -2,6 +2,8 @@
 #include "SceneDev1.h"
 #include "rapidcsv.h"
 #include "AniTest.h"
+#include "AniTest2.h"
+#include "SpriteGo.h"
 
 SceneDev1::SceneDev1(SceneIds id) : Scene(id)
 {
@@ -13,9 +15,17 @@ SceneDev1::~SceneDev1()
 
 void SceneDev1::Init()
 {
-	AddGo(new AniTest());
+	//AddGo(new AniTest());
+
+	background = new SpriteGo("");
+	background->SetTexture("graphics/cillpenguin.png");
+	AddGo(background);
+
+	fox = new AniTest2("fox");
+	AddGo(fox);
 
 	Scene::Init();
+
 }
 
 void SceneDev1::Release()
@@ -39,6 +49,10 @@ void SceneDev1::Exit()
 void SceneDev1::Update(float dt)
 {
 	Scene::Update(dt);
+
+	sf::Vector2f worldViewCenter = worldView.getCenter();
+	worldViewCenter = Utils::Lerp(worldViewCenter, fox->GetPosition(), dt * 0.5f);
+	worldView.setCenter(worldViewCenter);
 
 	if (InputMgr::GetKeyDown(sf::Keyboard::Enter))
 	{

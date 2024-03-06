@@ -1,4 +1,6 @@
 #pragma once
+class SpriteGo;
+class AniTest2;
 
 class SceneDev1 : public Scene
 {
@@ -15,5 +17,7 @@ public:
 	void Exit() override;
 
 	void Update(float dt) override;
+	AniTest2* fox = nullptr;
+	SpriteGo* background = nullptr;
 };
 

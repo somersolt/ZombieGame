@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DataTable.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="ZombieTable.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CrossHair.h" />
     <ClInclude Include="DataTable.h" />
